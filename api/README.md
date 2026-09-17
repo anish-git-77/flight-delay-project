@@ -141,3 +141,17 @@ api/
 ├── requirements.txt
 └── Dockerfile
 ```
+
+what i learned and acheived ?
+
+Designed and ran a 5-part hypothesis-testing suite (Welch's t-test, one-way ANOVA, Pearson/Spearman correlation, nested OLS regression, chi-square) to isolate the incremental predictive contribution of weather vs. carrier vs. schedule, using effect sizes (Cohen's d, η², Cramér's V) rather than relying on p-values alone at n=300K+
+Engineered a leakage-safe feature set for a binary delay classifier, including an airport-level "delay cascade" signal (lagged 1h/3h/6h congestion) that improved PR-AUC by 0.117 in ablation testing — the single largest feature-block contribution in the model
+Trained and compared 4 models (baseline, logistic regression, random forest, gradient boosting) using a temporal (not random) train/test split to prevent look-ahead bias, achieving ROC-AUC 0.767 / PR-AUC 0.513 (2.7x lift over base rate) with the best model
+Found and fixed a target-leakage bug in a leave-one-out encoding scheme that had produced a suspicious ROC-AUC of 1.000, root-caused it to per-bucket label reconstruction, and corrected it with train-only static lookup tables — validated with an honest holdout re-evaluation
+Built a calibration analysis confirming predicted probabilities matched observed outcomes within 2 percentage points across all bins, and ran threshold/precision-recall tradeoff analysis to support operational decision-making
+Re-engineered the research model into a deployable, self-contained production model (dropping live-feed-dependent features) and shipped it as a containerized FastAPI microservice with input validation, graceful fallback logic for missing features, and a documented accuracy tradeoff — deployed live on Render
+
+Engineered leakage-safe features (including a delay-cascade signal) and trained/compared 4 ML models with a temporal train/test split, reaching ROC-AUC 0.77 / PR-AUC 0.51 (2.7x lift over baseline)
+Identified and fixed a target-leakage bug in a feature-encoding scheme, validating the fix with an honest holdout re-evaluation
+Validated model calibration and ran threshold/precision-recall analysis to support real-world deployment decisions
+Deployed the model as a containerized FastAPI microservice on Render, with input validation and graceful fallbacks for missing data
